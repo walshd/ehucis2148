@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "ehu-cis2148"
+version = "22.0"
+description = "CIS2148"
+authors = ["Dave Walsh <david.walsh@edgehill.ac.uk>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.dev-dependencies]
+ou-container-builder = ">=2.0.0b19"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

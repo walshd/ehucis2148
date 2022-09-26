@@ -1,0 +1,22 @@
+module:
+  code: CIS2148
+  presentation: "22"
+image: 
+  user: ehu
+server:
+  access_token: ehu-cis2148
+  wrapper_host: "*.edgehill.ac.uk"
+packs:
+  - name: jupyterlab
+  - name: code_server
+packages:
+  apt:
+    - nginx
+    - php 
+    - libapache2-mod-php
+    - zip
+  pip:
+    - pandas
+    - numpy
+    - matplotlib
+    - seaborn

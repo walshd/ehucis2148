@@ -1,0 +1,61 @@
+name: Docker Container Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Setup Environment
+      run: |
+        echo "PATH=$HOME/.local/bin:$PATH" >> $GITHUB_ENV
+        echo "PIPX_BIN_DIR=$HOME/.local/bin" >> $GITHUB_ENV
+
+    - name: Install Base Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install pipx python3-venv
+        pipx install poetry
+
+    - name: Install Dependencies
+      run: |
+        poetry install
+
+    - name: Generate the Dockerfile
+      run: |
+        poetry run ou-container-builder --no-build
+        ls -la
+
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v3
+      with:
+        images: walshd/ehucis2148
+        tags: |
+          type=match,pattern=v(.*),group=1
+          type=sha
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        username: walshd
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+    - name: Build and push the Docker image
+      uses: docker/build-push-action@v2
+      with:
+        pull: true
+        push: true
+        context: .
+        tags: ${{ steps.meta.outputs.tags }}
+        platforms: linux/amd64
